@@ -8,6 +8,7 @@ import numpy as np
 import time
 import argparse
 import warnings
+import os
 
 from keras.models import Model
 from keras.layers import Input
@@ -66,10 +67,10 @@ parser.add_argument("--style_scale", dest="style_scale", default=1.0, type=float
 parser.add_argument("--total_variation_weight", dest="tv_weight", default=8.5e-5, type=float,
                     help="Total Variation weight")
 
-parser.add_argument("--num_iter", dest="num_iter", default=10, type=int,
+parser.add_argument("--num_iter", dest="num_iter", default=40, type=int,
                     help="Number of iterations")
 
-parser.add_argument("--model", default="vgg16", type=str,
+parser.add_argument("--model", default="vgg19", type=str,
                     help="Choices are 'vgg16' and 'vgg19'")
 
 parser.add_argument("--content_loss_type", default=0, type=int,
@@ -93,7 +94,7 @@ parser.add_argument("--init_image", dest="init_image", default="content", type=s
 parser.add_argument("--pool_type", dest="pool", default="max", type=str,
                     help='Pooling type. Can be "ave" for average pooling or "max" for max pooling')
 
-parser.add_argument('--preserve_color', dest='color', default="True", type=str,
+parser.add_argument('--preserve_color', dest='color', default="False", type=str,
                     help='Preserve original color in image')
 
 parser.add_argument('--min_improvement', default=0.0, type=float,
@@ -109,10 +110,16 @@ args = parser.parse_args()
 base_image_path = args.base_image_path
 style_reference_image_paths = args.syle_image_paths
 result_prefix = args.result_prefix
-
+"""
 style_image_paths = []
 for style_image_path in style_reference_image_paths:
     style_image_paths.append(style_image_path)
+"""
+style_image_paths = []
+for name in os.listdir(style_reference_image_paths[0]):
+    style_path = os.path.join(style_reference_image_paths[0],name)
+    print(style_path)
+    style_image_paths.append(style_path)
 
 style_masks_present = args.style_masks is not None
 mask_paths = []
